@@ -4228,12 +4228,8 @@ class BrowserTabFragment :
         webView?.loadUrl("${webView?.url.orEmpty()}$roomParameters")
     }
 
-    private fun onOmnibarDuckChatPressed(text: String) {
-        if (text.isNotEmpty()) {
-            duckChat.openDuckChatWithAutoPrompt(text)
-        } else {
-            duckChat.openDuckChat()
-        }
+    private fun onOmnibarDuckChatPressed(query: String) {
+        viewModel.openDuckChat(query)
     }
 }
 
