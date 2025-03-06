@@ -56,6 +56,7 @@ import com.duckduckgo.app.browser.databinding.IncludeFindInPageBinding
 import com.duckduckgo.app.browser.omnibar.Omnibar.OmnibarTextState
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode
 import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.CustomTab
+import com.duckduckgo.app.browser.omnibar.Omnibar.ViewMode.NewTab
 import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration.CancelAnimations
 import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration.ChangeCustomTabTitle
 import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration.DisableVoiceSearch
@@ -67,7 +68,6 @@ import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration.Outline
 import com.duckduckgo.app.browser.omnibar.OmnibarLayout.Decoration.PrivacyShieldChanged
 import com.duckduckgo.app.browser.omnibar.OmnibarLayoutViewModel.Command.CancelTrackersAnimation
 import com.duckduckgo.app.browser.omnibar.OmnibarLayoutViewModel.Command.StartTrackersAnimation
-import com.duckduckgo.app.browser.omnibar.OmnibarLayoutViewModel.LeadingIconState
 import com.duckduckgo.app.browser.omnibar.OmnibarLayoutViewModel.LeadingIconState.PRIVACY_SHIELD
 import com.duckduckgo.app.browser.omnibar.OmnibarLayoutViewModel.ViewState
 import com.duckduckgo.app.browser.omnibar.animations.BrowserTrackersAnimatorHelper
@@ -198,7 +198,7 @@ open class OmnibarLayout @JvmOverloads constructor(
                 ChangeBounds().apply {
                     duration = 400
                     interpolator = OvershootInterpolator(1.3f)
-                }
+                },
             )
             addTransition(
                 Fade().apply {
@@ -208,7 +208,7 @@ open class OmnibarLayout @JvmOverloads constructor(
                     addTarget(fireIconMenu)
                     addTarget(tabsMenu)
                     addTarget(browserMenu)
-                }
+                },
             )
         }
     }
@@ -522,7 +522,6 @@ open class OmnibarLayout @JvmOverloads constructor(
         val showBrowserMenu: Boolean,
         val showBrowserMenuHighlight: Boolean,
         val showChatMenu: Boolean,
-        val experimentalIconsEnabled: Boolean
     )
 
     private var previousButtonState: ButtonState? = null
@@ -536,7 +535,6 @@ open class OmnibarLayout @JvmOverloads constructor(
             showBrowserMenu = viewState.showBrowserMenu,
             showBrowserMenuHighlight = viewState.showBrowserMenuHighlight,
             showChatMenu = viewState.showChatMenu,
-            experimentalIconsEnabled = viewState.experimentalIconsEnabled
         )
 
         if (!isInitialRender && newButtonState != previousButtonState) {
@@ -550,7 +548,7 @@ open class OmnibarLayout @JvmOverloads constructor(
         browserMenu.isVisible = viewState.showBrowserMenu
         browserMenuHighlight.isVisible = viewState.showBrowserMenuHighlight
         spacer.isVisible = viewState.showVoiceSearch || viewState.showClearButton
-        aiChatMenu.isVisible = viewState.showChatMenu
+        aiChatMenu.isVisible = viewState.viewMode is NewTab || viewState.showChatMenu
         toolbarContainer.requestLayout()
 
         isInitialRender = false
