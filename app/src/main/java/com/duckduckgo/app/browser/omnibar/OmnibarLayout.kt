@@ -91,6 +91,7 @@ import com.duckduckgo.common.utils.FragmentViewModelFactory
 import com.duckduckgo.common.utils.extensions.replaceTextChangedListener
 import com.duckduckgo.common.utils.text.TextChangedWatcher
 import com.duckduckgo.di.scopes.FragmentScope
+import com.duckduckgo.duckchat.api.DuckChat
 import com.google.android.material.appbar.AppBarLayout
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
@@ -142,6 +143,9 @@ open class OmnibarLayout @JvmOverloads constructor(
 
     @Inject
     lateinit var pixel: Pixel
+
+    @Inject
+    lateinit var duckChat: DuckChat
 
     @Inject
     lateinit var dispatchers: DispatcherProvider
@@ -204,7 +208,6 @@ open class OmnibarLayout @JvmOverloads constructor(
                 Fade().apply {
                     duration = 200
                     addTarget(clearTextButton)
-                    addTarget(aiChatMenu)
                     addTarget(fireIconMenu)
                     addTarget(tabsMenu)
                     addTarget(browserMenu)
@@ -548,7 +551,7 @@ open class OmnibarLayout @JvmOverloads constructor(
         browserMenu.isVisible = viewState.showBrowserMenu
         browserMenuHighlight.isVisible = viewState.showBrowserMenuHighlight
         spacer.isVisible = viewState.showVoiceSearch || viewState.showClearButton
-        aiChatMenu.isVisible = viewState.viewMode is NewTab || viewState.showChatMenu
+        aiChatMenu.isVisible = duckChat.showInAddressBar() && (viewState.viewMode is NewTab || viewState.showChatMenu)
         toolbarContainer.requestLayout()
 
         isInitialRender = false
