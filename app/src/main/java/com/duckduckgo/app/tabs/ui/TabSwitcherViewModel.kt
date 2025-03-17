@@ -283,6 +283,7 @@ class TabSwitcherViewModel @Inject constructor(
     fun onCloseAllTabsRequested() {
         command.value = Command.CloseAllTabsRequest(tabItems.size)
         pixel.fire(AppPixelName.TAB_MANAGER_MENU_CLOSE_ALL_TABS_PRESSED)
+        pixel.fire(AppPixelName.TAB_MANAGER_MENU_CLOSE_ALL_TABS_PRESSED_DAILY, type = Daily())
     }
 
     // user has indicated they want to close selected tabs
@@ -320,6 +321,7 @@ class TabSwitcherViewModel @Inject constructor(
             if (tabItems.size == tabIds.size) {
                 // all tabs can be deleted immediately because no snackbar is needed and the tab switcher will be closed
                 pixel.fire(AppPixelName.TAB_MANAGER_MENU_CLOSE_ALL_TABS_CONFIRMED)
+                pixel.fire(AppPixelName.TAB_MANAGER_MENU_CLOSE_ALL_TABS_CONFIRMED_DAILY, type = Daily())
                 deleteTabs(tabIds)
                 command.value = Command.Close
             } else {
