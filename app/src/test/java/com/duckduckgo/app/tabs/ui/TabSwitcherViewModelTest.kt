@@ -68,6 +68,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -269,6 +270,7 @@ class TabSwitcherViewModelTest {
     @Test
     fun whenTabSelectedThenRepositoryNotifiedAndSwitcherClosedAndPixelSent() = runTest {
         testee.onTabSelected("abc")
+        verify(mockTabRepository).select(eq("abc"))
         verify(mockCommandObserver).onChanged(commandCaptor.capture())
         verify(mockPixel).fire(AppPixelName.TAB_MANAGER_SWITCH_TABS)
         assertEquals(Command.Close, commandCaptor.lastValue)
