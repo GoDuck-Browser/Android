@@ -176,11 +176,13 @@ class TabSwitcherViewModel @Inject constructor(
     }
 
     suspend fun onTabSelected(tabId: String) {
-        val mode = _selectionViewState.value.mode as? Selection ?: Normal
+        val mode = selectionViewState.value.mode as? Selection ?: Normal
         if (tabManagerFeatureFlags.multiSelection().isEnabled() && mode is Selection) {
             if (tabId in mode.selectedTabs) {
+                pixel.fire(AppPixelName.TAB_MANAGER_TAB_DESELECTED)
                 unselectTab(tabId)
             } else {
+                pixel.fire(AppPixelName.TAB_MANAGER_TAB_SELECTED)
                 selectTab(tabId)
             }
         } else {
