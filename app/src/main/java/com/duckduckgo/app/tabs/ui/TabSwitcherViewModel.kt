@@ -319,6 +319,9 @@ class TabSwitcherViewModel @Inject constructor(
 
     // user has indicated they want to close all tabs except the selected ones
     fun onCloseOtherTabsRequested() {
+        pixel.fire(AppPixelName.TAB_MANAGER_SELECT_MODE_MENU_CLOSE_OTHER_TABS)
+        pixel.fire(AppPixelName.TAB_MANAGER_SELECT_MODE_MENU_CLOSE_OTHER_TABS_DAILY, type = Daily())
+
         (selectionViewState.value.mode as? Selection)?.selectedTabs?.let { selectedTabs ->
             val otherTabsIds = (tabItems.map { it.id }) - selectedTabs.toSet()
             if (otherTabsIds.isNotEmpty()) {
