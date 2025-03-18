@@ -415,7 +415,7 @@ class TabSwitcherViewModel @Inject constructor(
     private fun selectTab(tabId: String) = selectTabs(listOf(tabId))
 
     private fun unselectTabs(tabIds: List<String>) {
-        (_selectionViewState.value.mode as? Selection)?.let { selectionMode ->
+        (selectionViewState.value.mode as? Selection)?.let { selectionMode ->
             _selectionViewState.update {
                 it.copy(mode = Selection(selectedTabs = selectionMode.selectedTabs - tabIds.toSet()))
             }
@@ -423,7 +423,7 @@ class TabSwitcherViewModel @Inject constructor(
     }
 
     private fun selectTabs(tabIds: List<String>) {
-        (_selectionViewState.value.mode as? Selection)?.let { selectionMode ->
+        (selectionViewState.value.mode as? Selection)?.let { selectionMode ->
             _selectionViewState.update {
                 it.copy(mode = Selection(selectedTabs = selectionMode.selectedTabs + tabIds.toSet()))
             }
@@ -431,7 +431,7 @@ class TabSwitcherViewModel @Inject constructor(
     }
 
     fun onEmptyAreaClicked() {
-        if (tabManagerFeatureFlags.multiSelection().isEnabled() && _selectionViewState.value.mode is Selection) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled() && selectionViewState.value.mode is Selection) {
             triggerNormalMode()
         }
     }
@@ -439,7 +439,7 @@ class TabSwitcherViewModel @Inject constructor(
     fun onUpButtonPressed() {
         pixel.fire(AppPixelName.TAB_MANAGER_UP_BUTTON_PRESSED)
 
-        if (tabManagerFeatureFlags.multiSelection().isEnabled() && _selectionViewState.value.mode is Selection) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled() && selectionViewState.value.mode is Selection) {
             triggerNormalMode()
         } else {
             command.value = Command.Close
@@ -449,7 +449,7 @@ class TabSwitcherViewModel @Inject constructor(
     fun onBackButtonPressed() {
         pixel.fire(AppPixelName.TAB_MANAGER_BACK_BUTTON_PRESSED)
 
-        if (tabManagerFeatureFlags.multiSelection().isEnabled() && _selectionViewState.value.mode is Selection) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled() && selectionViewState.value.mode is Selection) {
             triggerNormalMode()
         } else {
             command.value = Command.Close
@@ -457,7 +457,7 @@ class TabSwitcherViewModel @Inject constructor(
     }
 
     fun onMenuOpened() {
-        if (tabManagerFeatureFlags.multiSelection().isEnabled() && _selectionViewState.value.mode is Selection) {
+        if (tabManagerFeatureFlags.multiSelection().isEnabled() && selectionViewState.value.mode is Selection) {
             pixel.fire(AppPixelName.TAB_MANAGER_SELECT_MODE_MENU_PRESSED)
         } else {
             pixel.fire(AppPixelName.TAB_MANAGER_MENU_PRESSED)
