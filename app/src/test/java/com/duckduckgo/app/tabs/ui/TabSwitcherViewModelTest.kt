@@ -337,7 +337,6 @@ class TabSwitcherViewModelTest {
         verify(mockPixel).fire(AppPixelName.TAB_MANAGER_SELECT_MODE_MENU_SHARE_LINKS_DAILY, type = Daily())
     }
 
-
     @Test
     fun whenShareSingleLinkThenShareLinkCommandSent() = runTest {
         prepareSelectionMode()
@@ -958,7 +957,7 @@ class TabSwitcherViewModelTest {
     @Test
     fun whenSelectionModeAndOneNewTabPageSelectedThenVerifyDynamicInterface() {
         val tabItems = listOf(
-            SelectableTab(TabEntity("1"), true,),
+            SelectableTab(TabEntity("1"), true),
             SelectableTab(TabEntity("2", url = "cnn.com"), false),
         )
         val viewState = SelectionViewState(tabItems = tabItems, mode = Selection(listOf("1")), layoutType = null)
