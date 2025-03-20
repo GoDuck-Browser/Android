@@ -151,10 +151,7 @@ class TabSwitcherViewModelTest {
         swipingTabsFeature.self().setRawStoredState(State(enable = false))
         tabManagerFeatureFlags.multiSelection().setRawStoredState(State(enable = false))
 
-        whenever(mockTabRepository.flowDeletableTabs)
-            .thenReturn(repoDeletableTabs.consumeAsFlow())
-        whenever(mockTabRepository.liveTabs)
-            .thenReturn(tabs)
+        whenever(mockTabRepository.flowDeletableTabs).thenReturn(repoDeletableTabs.consumeAsFlow())
         runBlocking {
             whenever(mockTabRepository.add()).thenReturn("TAB_ID")
         }
@@ -380,6 +377,8 @@ class TabSwitcherViewModelTest {
 
     @Test
     fun whenBookmarkTabsConfirmedThenShowUndoBookmarkMessageCommandSentSkippingNewTabPage() = runTest {
+        prepareSelectionMode()
+
         val tabIds = tabList.map { it.tabId }
         val bookmark = Bookmark(
             id = tabIds.first(),
@@ -389,6 +388,7 @@ class TabSwitcherViewModelTest {
         )
 
         whenever(savedSitesRepository.insertBookmark(any(), any())).thenReturn(bookmark)
+        whenever(savedSitesRepository.getBookmark(any())).thenReturn(null)
 
         testee.onBookmarkTabsConfirmed(tabIds)
 
@@ -397,7 +397,9 @@ class TabSwitcherViewModelTest {
     }
 
     @Test
-    fun whenBookmarkTabsConfirmedThenShowUndoBookmarkMessageCommandSentSkippingExistingTabs() = runTest {
+    fun whenBookmarkTabsConfirmedThenShowUndoBookmarkMessageCommandSentSkippingUnsavedTabs() = runTest {
+        prepareSelectionMode()
+
         val tabIds = tabList.map { it.tabId }
         whenever(savedSitesRepository.insertBookmark(any(), any())).thenReturn(null)
 
@@ -405,6 +407,29 @@ class TabSwitcherViewModelTest {
 
         verify(mockCommandObserver).onChanged(commandCaptor.capture())
         assertEquals(Command.ShowUndoBookmarkMessage(0), commandCaptor.lastValue)
+    }
+
+    @Test
+    fun whenBookmarkTabsConfirmedThenShowUndoBookmarkMessageCommandSentSkippingExistingTabs() = runTest {
+        prepareSelectionMode()
+
+        val tabIds = tabList.map { it.tabId }
+        val bookmark = Bookmark(
+            id = tabIds.first(),
+            url = tabList.first().url.orEmpty(),
+            title = tabList.first().title.orEmpty(),
+            lastModified = null,
+        )
+
+        whenever(savedSitesRepository.insertBookmark(any(), any())).thenReturn(bookmark)
+        whenever(savedSitesRepository.getBookmark(bookmark.url)).thenReturn(bookmark)
+        whenever(savedSitesRepository.getBookmark(tabList[1].url.orEmpty())).thenReturn(null)
+        whenever(savedSitesRepository.getBookmark(tabList[2].url.orEmpty())).thenReturn(null)
+
+        testee.onBookmarkTabsConfirmed(tabIds)
+
+        verify(mockCommandObserver).onChanged(commandCaptor.capture())
+        assertEquals(Command.ShowUndoBookmarkMessage(1), commandCaptor.lastValue)
     }
 
     @Test
